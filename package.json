@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "node_modules\\.bin\\tslint.cmd -c tslint.json 'src/**/*.ts'",
-    "compile": "d:\\Projekte\\node_webscraper\\node_modules\\.bin\\tsc.cmd",
+    "compile": "node_modules\\.bin\\tsc.cmd",
     "start": "node src\\main.js",
     "compileAndStart": "npm run compile && npm run start"
   },
