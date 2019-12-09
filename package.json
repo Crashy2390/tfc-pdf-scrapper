@@ -1,0 +1,26 @@
+{
+  "name": "node_webscraper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "lint": "node_modules\\.bin\\tslint.cmd -c tslint.json 'src/**/*.ts'",
+    "compile": "d:\\Projekte\\node_webscraper\\node_modules\\.bin\\tsc.cmd",
+    "start": "node src\\main.js",
+    "compileAndStart": "npm run compile && npm run start"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/bluebird": "^3.5.29",
+    "@types/node": "^12.12.14",
+    "@types/puppeteer": "^2.0.0",
+    "@types/yargs": "^13.0.3",
+    "bluebird": "^3.7.2",
+    "moment": "^2.24.0",
+    "puppeteer": "^2.0.0",
+    "tslint": "^5.20.1",
+    "typescript": "^3.7.3",
+    "yargs": "^15.0.2"
+  }
+}
