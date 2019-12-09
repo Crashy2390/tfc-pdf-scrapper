@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import * as path from 'path';
 import * as puppeteer from 'puppeteer';
 
@@ -13,8 +14,16 @@ class Scraper {
 
     private workoutSelector = '#root > div.bg-grey-lightest > div.css-1ou0lb5.ea59lmr0 > div > div > div.flex.w-full.py-4.justify-center.flex-wrap > div > div.css-1nzcn15.e1q7svta0 > div.css-14zt9ip.e48drxd0';
 
+    private picturePath = 'pictures';
+
     private browser: puppeteer.Browser;
     private page: puppeteer.Page;
+
+    public constructor() {
+        if (!fs.existsSync(this.picturePath)) {
+            fs.mkdirSync(this.picturePath);
+        }
+    }
 
     public login() {
         const logPrefix = 'Scraper::login';
@@ -46,7 +55,7 @@ class Scraper {
         return this.page.goto(path.join(this.trainingDayBaseUrl, day), { waitUntil: 'networkidle0' })
             .then(() => this.page.pdf({
                 format: 'A4',
-                path: `pictures\\${day}.pdf`
+                path: path.join(this.picturePath, `${day}.pdf`)
             }));
     }
 
@@ -59,8 +68,6 @@ class Scraper {
         }
         return this.browser.close();
     }
-
-
 }
 
 export { Scraper };
