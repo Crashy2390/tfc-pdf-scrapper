@@ -44,7 +44,7 @@ class Scraper {
             })
             .then((page: puppeteer.Page) => {
                 this.page = page;
-                return this.page.goto(this.loginUrl, { waitUntil: 'networkidle0' });
+                return this.page.goto(this.loginUrl, { waitUntil: 'networkidle2' });
             })
             .then(() => {
                 return this.page.click(this.emailSelector)
@@ -52,10 +52,13 @@ class Scraper {
                     .then(() => this.page.click(this.pwSelector))
                     .then(() => this.page.keyboard.type(this.password))
                     .then(() => this.page.click(this.submitSelector))
-                    .then(() => this.page.waitForNavigation({ waitUntil: 'networkidle0' }));
+                    .then(() => this.page.waitForNavigation({ waitUntil: 'networkidle2' }));
             })
             .then(() => console.log(`${logPrefix} Login successfull.`))
-            .catch((err: Error) => console.log(`Error due to ${err}`));
+            .catch((err: Error) => {
+                console.log(`${logPrefix} Error due to ${err}`);
+                return Promise.reject(err);
+            });
     }
 
     public extractTrainingDay(day: string, cw: string) {
@@ -66,11 +69,15 @@ class Scraper {
         if (!fs.existsSync(cwPath)) {
             fs.mkdirSync(cwPath);
         }
-        return this.page.goto(path.join(this.trainingDayBaseUrl, day), { waitUntil: 'networkidle0' })
+        return this.page.goto(path.join(this.trainingDayBaseUrl, day), { waitUntil: 'networkidle2' })
             .then(() => this.page.pdf({
                 format: 'A4',
                 path: path.join(cwPath, `${day}.pdf`)
-            }));
+            }))
+            .catch((err: Error) => {
+                console.log(`${logPrefix} Error due to ${err}`);
+                return Promise.reject(err);
+            });
     }
 
     public stop() {
@@ -80,7 +87,11 @@ class Scraper {
             console.log(`${logPrefix} No browser opened, resolving.`);
             return Promise.resolve();
         }
-        return this.browser.close();
+        return this.browser.close()
+            .catch((err: Error) => {
+                console.log(`${logPrefix} Error due to ${err}`);
+                return Promise.reject(err);
+            });
     }
 }
 

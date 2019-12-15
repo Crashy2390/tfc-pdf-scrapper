@@ -16,7 +16,11 @@ function daily() {
     const scraper = new Scraper();
     return scraper.login()
         .then(() => scraper.extractTrainingDay(day, cw))
-        .then(() => scraper.stop());
+        .then(() => scraper.stop())
+        .catch((err: Error) => {
+            console.log(`${logPrefix} Error due to ${err}`);
+            return Promise.reject(err);
+        });
 }
 
 function period() {
@@ -42,7 +46,11 @@ function period() {
         .then(() => {
             return bluebird.mapSeries(days, ({ day, cw }) => scraper.extractTrainingDay(day, cw));
         })
-        .then(() => scraper.stop());
+        .then(() => scraper.stop())
+        .catch((err: Error) => {
+            console.log(`${logPrefix} Error due to ${err}`);
+            return Promise.reject(err);
+        });
 }
 
 const argv = yargs
@@ -57,8 +65,16 @@ const argv = yargs
 
 if (argv.startDate || argv.endDate) {
     period()
-        .then(() => console.log('Done'));
+        .then(() => console.log('Done'))
+        .catch((err: Error) => {
+            console.log(`main::main Error due to ${err}`);
+            process.exit(1);
+        });
 } else {
     daily()
-        .then(() => console.log('Done'));
+        .then(() => console.log('Done'))
+        .catch((err: Error) => {
+            console.log(`main::main Error due to ${err}`);
+            process.exit(1);
+        });
 }
