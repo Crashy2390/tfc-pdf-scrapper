@@ -4,13 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "lint": "node_modules\\.bin\\tslint.cmd -c tslint.json 'src/**/*.ts'",
-    "compile": "node_modules\\.bin\\tsc.cmd",
-    "start": "node src/main.js",
     "compileAndStart": "npm run compile && npm run start",
     "compileAndStartPeriod": "npm run compile && npm run start -- -s '2019-01-05' -e '2019-01-08'",
-    "ci:lint": "node_modules/.bin/tslint -c tslint.json 'src/**/*.ts'",
-    "ci:compile": "node_modules/.bin/tsc"
+    "lint": "node_modules/.bin/tslint -c tslint.json 'src/**/*.ts'",
+    "compile": "node_modules/.bin/tsc",
+    "start": "node src/main.js"
   },
   "author": "",
   "license": "ISC",
