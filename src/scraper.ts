@@ -34,7 +34,7 @@ class Scraper {
         };
 
         if (process.platform !== 'win32') {
-            puppeteerBrowserOptions.executablePath = '/usr/bin/chromium-browser';
+            puppeteerBrowserOptions.executablePath = '/usr/bin/chromium';
         }
 
         return puppeteer.launch(puppeteerBrowserOptions)
