@@ -59,7 +59,7 @@ class Scraper {
     }
 
     public extractTrainingDay(day: string, cw: string) {
-        const logPrefix = `Scraper::extractTrainingDay ${day}`;
+        const logPrefix = `Scraper::extractTrainingDay ${day} / ${cw}`;
         console.log(logPrefix);
 
         const cwPath = path.join(this.picturePath, `KW${cw}`);
