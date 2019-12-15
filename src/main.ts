@@ -4,15 +4,18 @@ import * as yargs from 'yargs';
 
 import { Scraper } from './scraper';
 
+const dateFormat = 'YYYY-MM-DD';
+
 function daily() {
     const logPrefix = 'main::daily';
     console.log(logPrefix);
     const date = new Date();
-    const day = `${date.getFullYear()}-${('0' + (date.getMonth() + 1)).slice(-2)}-${('0' + date.getDate()).slice(-2)}`;
-    console.log(`${logPrefix} scrapping data for date: ${day}`);
+    const day = moment().format(dateFormat);
+    const cw = moment().isoWeek().toString();
+    console.log(`${logPrefix} scrapping data for date: ${day} / ${cw}`);
     const scraper = new Scraper();
     return scraper.login()
-        .then(() => scraper.extractTrainingDay(day))
+        .then(() => scraper.extractTrainingDay(day, cw))
         .then(() => scraper.stop());
 }
 
@@ -25,16 +28,19 @@ function period() {
 
     const startDate = moment(argv.startDate as string);
     const endDate = moment(argv.endDate as string);
-    const days: string[] = [];
+    const days: Array<{ day: string, cw: string }> = [];
     for (const m = moment(startDate); m.diff(endDate, 'days') <= 0; m.add(1, 'days')) {
-        console.log(m.format('YYYY-MM-DD'));
-        days.push(m.format('YYYY-MM-DD'));
+        const obj = {
+            cw: m.isoWeek().toString(),
+            day: m.format(dateFormat)
+        };
+        console.log(obj);
+        days.push(obj);
     }
-
     const scraper = new Scraper();
     return scraper.login()
         .then(() => {
-            return bluebird.mapSeries(days, (day) => scraper.extractTrainingDay(day));
+            return bluebird.mapSeries(days, ({ day, cw }) => scraper.extractTrainingDay(day, cw));
         })
         .then(() => scraper.stop());
 }

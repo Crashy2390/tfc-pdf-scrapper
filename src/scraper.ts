@@ -14,7 +14,7 @@ class Scraper {
 
     private workoutSelector = '#root > div.bg-grey-lightest > div.css-1ou0lb5.ea59lmr0 > div > div > div.flex.w-full.py-4.justify-center.flex-wrap > div > div.css-1nzcn15.e1q7svta0 > div.css-14zt9ip.e48drxd0';
 
-    private picturePath = 'pictures';
+    private picturePath = 'output';
 
     private browser: puppeteer.Browser;
     private page: puppeteer.Page;
@@ -28,7 +28,16 @@ class Scraper {
     public login() {
         const logPrefix = 'Scraper::login';
         console.log(logPrefix);
-        return puppeteer.launch({ headless: true })
+
+        const puppeteerBrowserOptions: { [k: string]: any } = {
+            headless: true
+        };
+
+        if (process.platform !== 'win32') {
+            puppeteerBrowserOptions.executablePath = '/usr/bin/chromium-browser';
+        }
+
+        return puppeteer.launch(puppeteerBrowserOptions)
             .then((browser: puppeteer.Browser) => {
                 this.browser = browser;
                 return this.browser.newPage();
@@ -49,13 +58,18 @@ class Scraper {
             .catch((err: Error) => console.log(`Error due to ${err}`));
     }
 
-    public extractTrainingDay(day: string) {
+    public extractTrainingDay(day: string, cw: string) {
         const logPrefix = `Scraper::extractTrainingDay ${day}`;
         console.log(logPrefix);
+
+        const cwPath = path.join(this.picturePath, `KW${cw}`);
+        if (!fs.existsSync(cwPath)) {
+            fs.mkdirSync(cwPath);
+        }
         return this.page.goto(path.join(this.trainingDayBaseUrl, day), { waitUntil: 'networkidle0' })
             .then(() => this.page.pdf({
                 format: 'A4',
-                path: path.join(this.picturePath, `${day}.pdf`)
+                path: path.join(cwPath, `${day}.pdf`)
             }));
     }
 
